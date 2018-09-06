@@ -1,0 +1,28 @@
+﻿<adaptor type="RBS" version="v360" source="Subset-111-4_IOP_FFFIS_RBS-v360.pdf">
+    <message name="INIT.Config" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="RBSUnitId" type="int" description="id of the RBS unit to configure" />
+        <variable name="latency" type="int" description="in msec" />
+        <variable name="estabblishdelay" type="int" description="in msec" />
+    </message>
+    <message name="INIT.activate" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="RBSUnitId" type="int" description="id of the RBS unit to activate" />
+        <variable name="activate" type="boolean" description="true = switch on\nfalse = switch off" />
+    </message>
+    <message name="INIT.status" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="RBSUnitId" type="int" description="id of the RBS unit" />
+        <variable name="ready" type="boolean" description="false = no communication possible (e.g. modem\ndisconnected)\ntrue = ready for communication" />
+        <variable name="commEstablished" type="boolean" description="false = no communication\ntrue = communication established" />
+        <variable name="statusMessage" type="string" description="free message" />
+    </message>
+    <message name="INIT.statusRequest" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="RBSUnitId" type="int" description="id of the RBS unit" />
+    </message>
+    <message name="LOG.activate" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="RBSUnitId" type="int" description="id of the RBS unit" />
+        <variable name="tag" type="string" description="identification for the log file" />
+        <variable name="timeOut" type="int" description="log duration (sec)" />
+    </message>
+    <message name="LOG.terminate" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="RBSUnitId" type="int" description="id of the RBS unit" />
+    </message>
+</adaptor>

@@ -1,0 +1,19 @@
+import xml.etree.ElementTree as ET
+
+filename="Subset-111-2_IOP_FFFIS_OBU-v360_message-definitions.xml"
+
+adaptor_tree = ET.parse(adaptorDefinitionFile)
+adaptor_root = adaptor_tree.getroot()
+        
+for message_tag in adaptor_root.iter('message'):
+            
+	message_name = message_tag.get('name')
+    message_direction = message_tag.get('direction')
+            
+	message_variableList = []
+            
+	for variable_tag in message_tag.iter('variable'):
+            
+		attribute_name = variable_tag.get('name')
+		attribute_type = variable_tag.get('type')
+		attribute_description = variable_tag.get('description')

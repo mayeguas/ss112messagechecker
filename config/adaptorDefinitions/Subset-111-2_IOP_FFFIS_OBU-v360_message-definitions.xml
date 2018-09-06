@@ -1,0 +1,355 @@
+<adaptor type="OBU" version="v360" source="Subset-111-2_IOP_FFFIS_OBU-v360.pdf">
+    <message name="CONFIG.requestData" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="tclConfigData" type="string" description="free text containing TCL configuration information"/>
+        <variable name="timeStamp" type="string" description="YYYY-MM-DD-HH:MM:SS.xxx, xxx are the milliseconds\nbased on GMT" />
+    </message>
+    <message name="CONFIG.data" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="adaptorConfigData" type="string" description="free text containing the constituent configuration\nidentification (e.g. release note reference)" />
+        <variable name="timeStamp" type="string" description="YYYY-MM-DD-HH:MM:SS.xxx, xxx are the milliseconds\nbased on GMT" />
+    </message>
+    <message name="INIT.activate" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="activate" type="boolean" description="true = switch on\nfalse = switch off" />
+    </message>
+    <message name="INIT.status" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="activated" type="boolean" description="true = switched on\nfalse = switched off" />
+    </message>
+    <message name="OBU.setSystemFailure" direction="toAdaptor" mandatoryLevel="optional" trigger="singular" >
+    </message>
+    <message name="OBU.setColdMovement" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="coldMovement" type="int" description="Meter - distance to be moved\nPositive values means moving in direction of Cab\nA, negative values in direction of Cab B" />
+    </message>
+    <message name="OBU.reset" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="obuReset" type="boolean" description="true = see table above\nfalse = see table above" />
+    </message>
+    <message name="OBU.activate" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="activate" type="boolean" description="true = switch on\nfalse = switch off" />
+    </message>
+    <message name="OBU.status" direction="toTCL" mandatoryLevel="mandatory" trigger="regular" >
+        <variable name="activated" type="boolean" description="true = switched on\nfalse = switched off" />
+    </message>
+    <message name="LOGGING.activate" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="activate" type="boolean" description="true = activate logging\nfalse = deactivate logging" />
+        <variable name="logname" type="string" description="name of the logfile; max length: 25 characters\n(only numbers and letters allowed)" />
+    </message>
+    <message name="LOGGING.request" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="transfer" type="boolean" description="true = activate transfer to TCL\nfalse = no transfer" />
+        <variable name="logname" type="string" description="name of the logfile" />
+        <variable name="delete" type="boolean" description="true = delete logfile\nfalse = no action" />
+    </message>
+    <message name="LOGGING.result" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="logname" type="string" description="name of the logfile" />
+        <variable name="data" type="base64" description="ASCII" />
+        <variable name="sequenceNumber" type="int" description="sequence number:\nThe complete logfile should be split into a\nsequence starting with '1' of\n'LOGGING.result' due to network resources" />
+        <variable name="complete" type="boolean" description="false = the sequence will be continued\ntrue = last message of the sequence" />
+    </message>
+    <message name="JRU-LOGGING.request" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="transfer" type="boolean" description="true = activate transfer to TCL\nfalse = no transfer" />
+        <variable name="logname" type="string" description="name of the logfile" />
+        <variable name="translation" type="boolean" description="true = UNISIG decoded ASCII translation of\nJRU-data\nfalse = binary format of JRU-data according to\nSUBSET-027" />
+    </message>
+    <message name="JRU-LOGGING.result" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="logname" type="string" description="name of the logfile" />
+        <variable name="data" type="base64" description="ASCII or binary" />
+        <variable name="sequenceNumber" type="int" description="sequence number:\nThe complete logfile should be split into a\nsequence of 'JRU-LOGGING.result' due to\nnetwork resources, starting with '1'." />
+        <variable name="complete" type="boolean" description="false = the sequence will be continued\ntrue = last message of the sequence" />
+    </message>
+    <message name="INFORMATION.error" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="severity" type="int" description="0 = information (general purpose message)\n1 = warning\n2 = error" />
+        <variable name="counter" type="int" description="number of occurrences of this error; may always\nreported as 0" />
+        <variable name="message" type="string" description="full text or mnemonic" />
+        <variable name="causingMethod" type="string" description="if applicable; for instance:\n'OBU.activate" />
+    </message>
+    <message name="MOVEMENT.setTarget" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="mode" type="int" description="0 = speed intervention mode 'SIM'\n1 = position intervention mode 'PIM'\n2 = automatic mode 'AM'\n3 = automatic mode with release speed" />
+        <variable name="distanceToEntrancePoint" type="double" description="meter" />
+        <variable name="trainDirection" type="int" description="see note below" />
+        <variable name="speed" type="double" description="0 - 600 km / h" />
+        <variable name="percentage" type="int" description="range: 0 - 150 % of permitted speed\n(used only in automatic mode to adjust\nthe speed)" />
+    </message>
+    <message name="MOVEMENT.setAdaptorBehaviour" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="percentageThrottle" type="int" description="1-100%, How many percent of max acc\nshall be used." />
+        <variable name="percentageBrake" type="int" description="1-100%. How many percent of max brake\ncapacity shall be used. Can be used in\nmode 0 and 1." />
+        <variable name="disableSB" type="boolean" description="true = the OBU Adaptor follows the speed\ntarget without taking into account the\nservice brakes command;\nfalse = the OBU Adaptor brakes according\nto service brake parameters." />
+        <variable name="disableEB" type="boolean" description="true = the OBU Adaptor follows the speed\ntarget without taking into account the\nemergency brakes command;\nfalse = the OBU Adaptor brakes according\nto emergency brake parameters." />
+        <variable name="disableTCO" type="boolean" description="true = the OBU Adaptor follows the speed\ntarget without taking into account the\ntraction cut-off command;\nfalse = the OBU Adaptor brakes according\nto traction cut-off parameters." />
+        <variable name="disableElectroPneumaticBrake" type="boolean" description="true = the OBU Adaptor follows the speed\ntarget without taking into account the\nElectro Pneumatic Brake command;\nfalse = the OBU Adaptor brakes according\nto Electro Pneumatic Brake parameters" />
+        <variable name="disableEddyCurrentBrake" type="boolean" description="true = the OBU Adaptor follows the speed\ntarget without taking into account the Eddy\nCurrent Brake command;\nfalse = the OBU Adaptor brakes according\nto Eddy Current Brake parameters." />
+        <variable name="disableRegenerativeBrake" type="boolean" description="true = the OBU Adaptor follows the speed\ntarget without taking into account the\nRegenerative Brake command;\nfalse = the OBU Adaptor brakes according\nto Regenerative Brake parameters." />
+        <variable name="disableMagneticShoeBrake" type="boolean" description="true = the OBU Adaptor follows the speed\ntarget without taking into account the\nMagnetic Shoe Brake command;\nfalse = the OBU Adaptor brakes according\nto Magnetic Shoe Brake parameters" />
+        <variable name="disableAdditionalBrake" type="boolean" description="true = the OBU Adaptor follows the speed\ntarget without taking into account the\nAdditional Brake command;\nfalse = the OBU Adaptor brakes according\nto Additional Brake parameters." />	
+    </message>
+    <message name="MOVEMENT.setGradientProfile" direction="toAdaptor" mandatoryLevel="optional" trigger="singular" >
+        <variable name="gradient" type="array(int)" description="+254promill to - 254promill\n+ = uphill\n- = downhill" />
+        <variable name="distanceToEntrancePoint" type="array(double)" description="meter" />
+    </message>
+    <message name="BALISE.insertBalise" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="elementHandle" type="int" description="unique identifier of a balise, used\nbetween TCL and OBU Adaptor (range:\npositive values)" />
+        <variable name="distanceToEntrancePoint" type="double" description="meter" />
+        <variable name="codedBaliseTelegram" type="base64" description="Coded balise telegram data as it has to\nbe sent from the balise to the EVC\nantenna" />
+    </message>
+    <message name="BALISE.removeBalise" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="elementHandle" type="int" description="unique identifier of a balise, used between TCL\nand OBU Adaptor (range: positive values)" />
+    </message>
+    <message name="BALISE.activeAntenna" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="activeAntenna" type="int" description="1 = cab A\n2 = cab B" />
+        <variable name="antennaOffset" type="double" description="distance between train-head (always cabin-A) and\nactive antenna in metres" />
+    </message>	
+    <message name="EUROLOOP.insertLoop" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="elementHandle" type="int" description="unique identifier of a loop, used between\nTCL and OBU Adaptor (range: positive\nvalues)" />
+        <variable name="distanceToEntrancePoint1" type="double" description="meter" />
+        <variable name="distanceToEntrancePoint2" type="double" description="meter" />
+        <variable name="codedLoopTelegram" type="base64" description="coded EUROLOOP telegram data as it has\nto be sent from the loop to the EVC\nantenna" />
+    </message>
+    <message name="EUROLOOP.removeLoop" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="elementHandle" type="int" description="unique identifier of a loop, used between TCL and\nOBU Adaptor (range: positive values)" />
+    </message>
+    <message name="NTC.insertTrackData" direction="toAdaptor" mandatoryLevel="optional" trigger="singular" >
+        <variable name="elementHandle" type="int" description="unique identifier of a NTC track element,\nused between TCL and OBU\nAdaptor/external injector (range: positive\nvalues)" />
+        <variable name="elementType" type="string" description="element type\ne.g.: KER, ZUB123, etc.\nThe content of this attribute must be\nagreed between TCL and OBU Adaptor\nsuppliers" />
+        <variable name="distanceToEntrancePoint1" type="double" description="meter" />
+        <variable name="distanceToEntrancePoint2" type="double" description="meter" />
+        <variable name="elementData" type="base64" description="coded NTC element data" />
+        <variable name="elementDataLength" type="int" description="length in bits of the element data\n-1 = Not used" />
+    </message>
+    <message name="NTC.removeTrackData" direction="toAdaptor" mandatoryLevel="optional" trigger="singular" >
+        <variable name="elementHandle" type="int" description="unique identifier of a NTC track element, used\nbetween TCL and OBU Adaptor/external injector\n(range: positive values)" />
+    </message>
+    <message name="TIU.sleeping" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="activate" type="boolean" description="true = enter SL\nfalse = release SL" />
+    </message>	
+    <message name="TIU.passiveShunting" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="permitted" type="boolean" description="true = PS is permitted\nfalse = PS is not permitted" />
+    </message>
+    <message name="TIU.nonLeading" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="permitted" type="boolean" description="true = NL is permitted\nfalse = NL is not permitted" />
+    </message>
+    <message name="TIU.isolation" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+    </message>
+    <message name="TIU.setSpeedValue" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="setSpeedValue" type="int" description="0 .. 600 in 1km/h steps (used since SRS 3.6.0)\n-1 : not available" />
+    </message>
+    <message name="TIU.brakeStatus" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="emergencyBrake" type="int" description="0 = brake command deactivated\n1 = brake command activated\n-1 = unknown" />
+        <variable name="serviceBrake" type="int" description="0 = brake command deactivated\n1 = brake command activated\n-1 = unknown" />
+        <variable name="tractionCutOff" type="int" description="0 = deactivated\n1 = activated\n-1 = unknown" />
+        <variable name="regenerativeBrake" type="int" description="optional\n0 = shall not be inhibited\n1 = shall be inhibited\n-1 = unknown" />
+        <variable name="magneticShoeBrake" type="int" description="optional\n0 = shall not be inhibited\n1 = shall be inhibited\n-1 = unknown" />
+        <variable name="eddyCurrentBrakeForSB" type="int" description="optional\n0 = shall not be inhibited\n1 = shall be inhibited\n-1 = unknown" />
+        <variable name="eddyCurrentBrakeForEB" type="int" description="optional\n0 = shall not be inhibited\n1 = shall be inhibited\n-1 = unknown" />	
+    </message>
+    <message name="TIU.brakeActivation" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="regenerativeBrake" type="int" description="optional\n0 = shall be deactivated\n1 = shall be activated\n-1 = no change" />
+        <variable name="magneticShoeBrake" type="int" description="optional\n0 = shall be deactivated\n1 = shall be activated\n-1 = no change\n['eddyCurrentBrake'] int optional" />
+        <variable name="eddyCurrentBrake" type="int" description="optional\n0 = shall be deactivated\n1 = shall be activated\n-1 = no change" />
+        <variable name="electroPneumaticBrake" type="int" description="optional\n0 = shall be deactivated\n1 = shall be activated\n-1 = no change" />
+        <variable name="additionalBrake" type="int" description="optional\n0 = shall be deactivated\n1 = shall be activated\n-1 = no change" />
+    </message>
+    <message name="TIU.brakeConfiguration" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="regenerativeBrake" type="int" description="optional\n0 = no interface\n1 = interface exists and affects only EB\n2 = interface exists and affects only SB\n3 = interface exists and affects EB and SB" />
+        <variable name="magneticShoeBrake" type="int" description="optional\n0 = no interface\n1 = interface exists and affects only EB" />
+        <variable name="eddyCurrentBrake" type="int" description="optional\n0 = no interface\n1 = interface exists and affects only EB\n2 = interface exists and affects only SB\n3 = interface exists and affects EB and SB" />
+        <variable name="electroPneumaticBrake" type="int" description="optional\n0 = no interface\n1 = interface exists and affects only SB\n2 = interface exists and affects EB and SB" />
+        <variable name="additionalBrake" type="int" description="optional\n0 = not implemented\n1 = implemented" />
+        <variable name="serviceBrakeInterface" type="int" description="optional\n0 = not implemented\n1 = implemented" />
+        <variable name="tractionCutOffInterface" type="int" description="optional\n0 = not implemented\n1 = implemented" />	
+    </message>
+    <message name="TIU.brakePressure" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="pressure" type="int" description="0 .. 100\nfrom 0 to 10 bar in steps of 0.1 bar" />
+    </message>
+    <message name="TIU.trainIntegrity" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="activate" type="int" description="1 = train integrity OK\n0 = train integrity NOK\n-1 = train integrity not available" />
+    </message>
+    <message name="TIU.selectCab" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="activeCab" type="int" description="0 = none\n1 = cab A\n2 = cab B" />
+    </message>
+    <message name="TIU.selectDrivingDirection" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="drivingDirection" type="int" description="1 = FORWARD\n2 = REVERSE\n3 = NEUTRAL" />
+    </message>
+    <message name="TIU.signalStatus" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="pantograph" type="int" description="0 = Lower pantograph\n1 = Raise pantograph" />
+        <variable name="airTightness" type="int" description="0 = Air tightness not active\n1 = Air tightness active" />
+        <variable name="mainPowerSwitch" type="int" description="0 = Main power switch open\n1 = Main power switch close" />
+        <variable name="isolation" type="int" description="0 = On-board equipment not isolated\n1 = On-board equipment isolated" />
+    </message>
+    <message name="TIU.coldMovementStatus" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="coldMovement" type="int" description="0 = Train has not moved\n1 = Train has moved" />
+    </message>
+    <message name="TDA.data" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="messageType" type="int" description="unique identifier which defines the\ncontent of the data" />
+        <variable name="bitstream" type="base64" description=" " />
+    </message>
+    <message name="TIU.getTrainDataEntryType" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >    
+    </message>
+    <message name="TIU.replyTrainDataEntryType" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="type" type="int" description="0 = Fixed\n1 = Flexible\n2 = Switchable" />
+    </message>
+    <message name="DMI.getSystemVersion" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >    
+    </message>
+    <message name="DMI.replySystemVersion" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="version" type="string" description="the displayed system version from the 'System\nversion window' from inside the 'Settings window'" />
+    </message>
+    <message name="DMI.getLanguage" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >    
+    </message>
+    <message name="DMI.replyLanguage" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="active" type="string" description="identifier of the current active language (see next\nattribute 'languageId')" />
+        <variable name="languageId" type="array(string)" description="unique identifier of an available language (list)" />
+        <variable name="languageName" type="array(string)" description="(english) name of the language (description) (list)" />
+    </message>
+    <message name="DMI.setLanguage" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="languageId" type="string" description="identifier of the language to be activated (see\nattribute 'languageId' of DMI.replyLanguage)" />
+    </message>
+    <message name="DMI.getLevel" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >   
+    </message>
+    <message name="DMI.replyLevel" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="levelETCS" type="array(int)" description="0 = Level 0\n1 = Level NTC\n2 = Level 1\n3 = Level 2\n4 = Level 3\n(list)" />
+        <variable name="nationalSystemId" type="array(int)" description="NID_NTC (list)" />
+        <variable name="ntcName" type="array(string)" description="name of the NTC (description) (list)" />
+    </message>
+    <message name="DMI.getTrainType" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >   
+    </message>
+    <message name="DMI.replyTrainType" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="typeId" type="array(int)" description="an identifier used between TCL and OBU Adaptor\n(list)" />
+        <variable name="typeName" type="array(string)" description="name of the train type (description) (list)" />
+    </message>
+    <message name="DMI.getTrainCategory" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >   
+    </message>
+    <message name="DMI.replyTrainCategory" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="categoryId" type="array(int)" description="an identifier used between TCL and OBU Adaptor\n(list)" />
+        <variable name="categoryName" type="array(string)" description="name of the train category (description) (list)" />
+    </message>
+    <message name="DMI.getRadioNetworkId" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >   
+    </message>
+    <message name="DMI.replyRadioNetworkId" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="radioNetworkId" type="array(int)" description="0 .. 999999 (list)" />
+        <variable name="networkName" type="array(string)" description="name of the radio network (description) (list)" />
+    </message>
+    <message name="DMI.getVBC" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >   
+    </message>
+    <message name="DMI.replyVBC" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="code" type="array(string)" description="VBC code (numeric) (list)" />
+    </message>
+    <message name="DMI.setVBC" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="code" type="string" description="VBC code (numeric)" />
+    </message>
+    <message name="DMI.removeVBC" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="code" type="string" description="VBC code (numeric)" />
+    </message>
+    <message name="DMI.setPeriodicity" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="periodicity" type="int" description="milliseconds (default value = 200 should be given\nat least)" />
+    </message>
+    <message name="DMI.status1" direction="toTCL" mandatoryLevel="mandatory" trigger="regular" >
+        <variable name="fromToCabA" type="boolean" description="true = reports status of cab A\nfalse = reports status of cab B" />
+        <variable name="activeCab" type="int" description="0 = none\n1 = cab A\n2 = cab B\n3 = both\n4 = unknown" />
+        <variable name="displayedSpeed" type="double" description="km/h - currently shown speed on the DMI." />
+        <variable name="permittedSpeed" type="double" description="km/h - currently shown permitted speed on\nthe DMI." />
+        <variable name="distanceToTarget" type="double" description="meter - distance to the next supervised target\n(active target that will cause OBU to brake)" />
+        <variable name="distanceToEntrancePoint" type="double" description="meter," />
+        <variable name="geoPos" type="int" description="- 1 = Geo pos not available (no packet 79\nreceived yet)\nPosition int = geo pos value. (min 24 bit)\nunit: meter" />
+        <variable name="tunnelPos" type="int" description="1 = the tunnel area position will not be\ndisplayed\nPosition int = distance to the track condition\nin meter" />
+    </message>
+    <message name="DMI.status2" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="fromToCabA" type="boolean" description="true = reports status of cab A\nfalse = reports status of cab B" />
+        <variable name="activeCab" type="int" description="0 = none\n1 = cab A\n2 = cab B\n3 = both\n4 = unknown" />
+        <variable name="releaseSpeed" type="double" description="km/h" />
+        <variable name="targetSpeed" type="double" description="km/h" />
+        <variable name="levelETCS" type="int" description="0 = Level 0\n1 = Level NTC specified by 'nationalSystemId'\n2 = Level 1\n3 = Level 2\n4 = Level 3\n5 = unknown" />
+        <variable name="nationalSystemId" type="int" description="if levelETCS == 1: NID_NTC\nelse: -1" />
+        <variable name="modeETCS" type="int" description="0 = Full Supervision (FS)\n1 = On Sight (OS)\n2 = Staff Responsible (SR)\n3 = Shunting (SH)\n4 = Unfitted (UN)\n5 = Sleeping (SL)\n6 = Stand By (SB)\n7 = Trip (TR)\n8 = Post Trip (PT)\n9 = System Failure (SF)\n10 = Isolation (IS)\n11 = Non Leading (NL)\n12 = Limited Supervision (LS)\n13 = National System (NS)\n14 = Reversing (RV)\n15 = Passive Shunting (PS)" />
+        <variable name="adhesion" type="boolean" description="true = slippery rail activated\nfalse = normal conditions" />
+        <variable name="emergencyMsgIndication" type="int" description="0 = no indication\n1 = flashing indication (EM received)\n2 = Intervention (Brake due to EM)" />
+        <variable name="overrideEOA" type="boolean" description="true = Override EOA is activated\nfalse = Override EOA is not activated" />
+        <variable name="warningStatus" type="int" description="0 = no warning\n1 = pre-indication (not used since SRS 3.6.0)\n2 = indication\n3 = warning\n4 = intervention\n5 = over-speed" />
+        <variable name="etcsVersionInfo" type="int" description="corresponds to the 7 bits of M_VERSION:\ne.g.\n16 = Version 1.0 ( 001 0000 )\n17 = Version 1.1 ( 001 0001 )\n32 = Version 2.0 ( 010 0000 )\n33 = Version 2.1 ( 010 0001 )" />
+        <variable name="reversingPermitted" type="boolean" description="true: reversing is permitted\nfalse: reversing is not permitted" />
+        <variable name="lssma" type="int" description="The Lowest Supervised Speed within the Movement\nAuthority (LSSMA) shall be displayed\n-1 : LSSMA is not displayed\nOther : the LSSMA value shall be displayed" />
+        <variable name="setSpeedValue" type="int" description="0 .. 600 in 1km/h steps (used since SRS 3.6.0)\n-1 : not available" />
+    </message>
+    <message name="DMI.rbcConnectionStatus" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="fromToCabA" type="boolean" description="true = reports status of cab A\nfalse = reports status of cab B" />
+        <variable name="activeCab" type="int" description="0 = none\n1 = cab A\n2 = cab B\n3 = both\n4 = unknown" />
+        <variable name="rbcIdNumber1" type="int" description="0 - 16 777 214\nunknown = 16 777 215" />
+        <variable name="rbcTelNumber1" type="string" description="16 digits\n0 - 9999999999999999" />
+        <variable name="connectionStatus1" type="int" description="0 = not connected\n1 = connecting\n2 = connected" />
+        <variable name="radioNetworkId1" type="int" description="-1 - 999999" />
+        <variable name="rbcIdNumber2" type="int" description="0 - 16 777 214\nunknown = 16 777 215" />
+        <variable name="rbcTelNumber2" type="string" description="16 digits\n0 - 9999999999999999" />
+        <variable name="connectionStatus2" type="int" description="0 = not connected\n1 = connecting\n2 = connected" />
+        <variable name="radioNetworkId2" type="int" description="-1 999999" />
+    </message>
+    <message name="DMI.messageIndication" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="messageHandle" type="int" description="must be unique over all 'active' messages,\nmay be a counter" />
+        <variable name="messageText" type="string" description="in case of a 'Predefined Text Message', the\nEnglish version has to be used" />
+        <variable name="active" type="boolean" description="true = message appears\nfalse = message disappears" />
+    </message>	
+    <message name="OBU.trackConditionIndication" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="type" type="int" description="- track condition:\n0 = non stopping area\n1 = non stopping area tunnel\n2 = sound horn\n3 = powerless section (pantograph)\n4 = radio hole\n5 = air tightness\n6 = switch off regenerative brake\n7 = switch off eddy current brake\n8 = switch off magnetic shoe brake\n9 = powerless section (main power)\n10 = switch off eddy current brake for\nemergency brake\n- route suitability data:\n16 = loading gauge profile\n17 = max axle load\n18 = traction system\n- big metal masses\n32 = balise transmission control\n- change of traction system\n64 = traction power control\n- change of allowed current consumption\n128 = allowed current consumption\n- station platform\n256 = platform info\n- level crossing info\n512 = level crossing" />
+        <variable name="distanceToEntrancePoint" type="double" description="0 - 327670,0 meter (10cm steps)" />
+        <variable name="length" type="double" description="0 - 327670,0 meter (10cm steps)\nused for types:\n- track condition (0 - 9)\n- big metal masses (32)\n- platform info (256)\n- level crossing (512)\nother : 0" />
+        <variable name="value" type="int" description="used for types:\n- route suitability data (16 - 18)\nif type = 16: M_LINEGAUGE\nif type = 17: M_AXLELOADCAT\nif type = 18: M_VOLTAGE\n- change of traction system(64)\nif type = 64: M_VOLTAGE\n- change of allowed current consumption\n(128)\nif type = 128: M_CURRENT\n- platform info (256)\nif type = 256: M_PLATFORM\n- level crossing (512)\nif type = 512: NID_LX\nother: 0" />
+        <variable name="value2" type="int" description="used for types:\n- change of traction power (64)\nif type = 64: NID_CTRACTION\n- route suitability data (18)\nif type = 18: NID_CTRACTION\n- platform info (256)\nif type = 256: Q_PLATFORM\n- level crossing (512)\nif type = 512: Q_LXSTATUS\nother: 0" />
+        <variable name="value3" type="int" description="used for types:\n- level crossing (512)\nif type = 512: V_LX\nother: 0" />
+        <variable name="value4" type="int" description="used for types:\n- level crossing (512)\nif type = 512: L_STOPLX\nother: 0" />
+    </message>
+    <message name="DMI.getNTCData" direction="toAdaptor" mandatoryLevel="optional" trigger="singular" >
+        <variable name="nationalSystemId" type="int" description="NID_NTC" />
+    </message>
+    <message name="DMI.replyNTCData" direction="toTCL" mandatoryLevel="optional" trigger="singular" >
+        <variable name="nationalSystemId" type="int" description="NID_NTC" />
+        <variable name="NTCDataLabel" type="array(array(string))" description="This array contains an array (array2) of all\npossible NTC data labels together with all\npossible selectable items. This array2 is\ngiven for all possible NTC data labels and\nhas the following structure:\nstring:data label name,\npossible selectable item1,\npossible selectable item 2,\n...\nIf the array is empty, there is no dedicated\nkeyboard." />
+    </message>
+    <message name="DMI.setDriverIdStart" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="driverIdNumber" type="string" description="0 to 999999" />
+    </message>
+    <message name="DMI.setDriverIdReady" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+    </message>
+    <message name="DMI.setTrainRunningNumber" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="trainId" type="string" description="8 characters\n0 to 99999999\nFFFFFFFF reserved for unknown" />
+    </message>
+    <message name="DMI.beginStartOfMission" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+    </message>
+    <message name="DMI.levelRequest" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="levelETCS" type="int" description="0 = Level 0\n1 = Level NTC specified by 'nationalSystemId'\n2 = Level 1\n3 = Level 2\n4 = Level 3" />
+        <variable name="nationalSystemId" type="int" description="if levelETCS == 1: NID_NTC\nelse: -1" />
+        <variable name="rbcDataEntryType" type="int" description="0 = new data entry\n1 = contact last RBC\n2 = use short number" />	
+        <variable name="rbcIdNumber" type="int" description="1 - 16 777 214\nunknown = 16 777 215" />	
+        <variable name="rbcTelNumber" type="string" description="16 digits\n0 - 9999999999999999" />	
+        <variable name="radioNetworkId" type="int" description="-1 - 999999" />	
+    </message>
+    <message name="DMI.setFixedTrainData" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="trainType" type="int" description="see the values given by 4.3.10.94.3.10.9" />
+    </message>
+    <message name="DMI.setFlexibleTrainData" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="trainCategory" type="int" description="see the values given by 4.3.10.114.3.10.11" />
+        <variable name="trainLength" type="int" description="0 - 4095 m in 1m steps (L_TRAIN)" />
+        <variable name="brakePercentage" type="int" description="-1 = Not Applicable\n0 - 250% in 1% steps" />	
+        <variable name="maxTrainSpeed" type="int" description="0 - 600 km/h in 5 km/h steps" />	
+        <variable name="axleLoadCategory" type="int" description="special value:\n0 = A\n1 = HS17\n2 = B1\n3 = B2\n4 = C2\n5 = C3\n6 = C4\n7 = D2\n8 = D3\n9 = D4\n10 = D4XL\n11 = E4\n12 = E5\n(M_AXLELOADCAT )" />
+        <variable name="airTightSystem" type="int" description="0 = not fitted\n1 = fitted" />
+        <variable name="loadingGauge" type="int" description="Special value:\n1 = G1\n2 = GA\n3 = GB\n4 = GC\n0 = Out of GC\n(M_LOADINGGAUGE)" />
+    </message>
+    <message name="DMI.setAdhesion" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="adhesionFactor" type="int" description="1 = 100%, non-slippery rail\n2 = 70%, slippery rail" />
+    </message>
+    <message name="DMI.setSRdata" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="maxSRSpeed" type="int" description="Staff Responsible mode speed\n0 – 600 km/h in 5 km/h steps\nvalues: 0,5,10, .. ,595,600\n(based on V_NVSTFF)" />
+        <variable name="sRDistance" type="int" description="maximum distance for running in Staff\nResponsible mode\n0 - 327660 meter in 10m steps\nvalues: 0 .. 32766\nspecial: 32767 means infinite\n(D_NVSTFF)" />
+    </message>
+    <message name="DMI.selectNTC" direction="toAdaptor" mandatoryLevel="optional" trigger="singular" >
+        <variable name="nationalSystemId" type="int" description="NID_NTC" />
+    </message>
+    <message name="DMI.setNTCData" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="nationalSystemId" type="int" description="NID_NTC" />
+        <variable name="performTCDataEntry" type="boolean" description="true = NTC Data Entry is performed\nfalse = NTC Data Entry is skipped" />
+        <variable name="NTCDataLabel" type="array(string)" description="Array of names of NTC data label which should\nbe entered\nFor each label the value to be entered is given in\nthe next attribute at the same array-position" />
+        <variable name="NTCDataLabelValue" type="array(string)" description="Value of the NTC Data to be entered on the DMI." />
+    </message>
+    <message name="DMI.driverDecisionRequest" direction="toTCL" mandatoryLevel="optional" trigger="singular" >
+        <variable name="currentState" type="int" description="0 = Waiting for Driver Id (S1)\n1 = Waiting for level entry (S2)\n2 = Waiting for Driver Selection (S10)\n3 = Waiting for 'Start' (S20)\n4 = Waiting for 'SN Ack' (S22)\n5 = Waiting for 'UN Ack' (S23)\n6 = Waiting for 'SR Ack' (S24)\n7 = Waiting for 'OS Ack' (S25)\n8 = Waiting for 'SH Ack' (S25)\n9 = Waiting for EOA Req (S14)\n10 = Waiting for Train running number (S13)\n11 = Waiting for EB release\n12 = Waiting for SB release\n13 = Waiting for text message ack\n14 = Waiting for TAF ack\n15 = Waiting for Train integrity\n16 = Waiting for level transition ack\n17 = Waiting for Roll Away Protection ack\n18 = Confirm trip\n19 = Confirm train integrity\n20 = Waiting for 'LS Ack' (S25)\n21 = Waiting for Reverse Movement Protection ack\n22 = Waiting for Standstill Supervision ack\n23 = Waiting for Post Trip distance exceeded ack\n24 = Waiting for Train Data change from source\ndifferent from driver ack\n25 = Waiting for NTC system selection\n26 = Waiting for NTC Data Entry" />
+        <variable name="messageHandle" type="int" description="must be unique over all 'active' messages, may be a\ncounter (see DMI.messageIndication); only valid for\ntext message ack" />
+    </message>
+    <message name="DMI.driverInput" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="action" type="int" description="5 = Shunting Request (Maintain shunting)\n6 = Exit of Shunting Request\n7 = Non-leading selection\n8 = Exit of Non-leading request\n9 = Override EOA request\n10 = Override route suitability\n11 = Start Button pressed\n12 = Ack after Trip\n13 = Ack of SR\n14 = Ack of OS\n15 = Ack of UN\n16 = Ack of SH\n17 = Ack of RV\n18 = Ack of SN\n19 = Ack of release EB\n20 = Ack of release SB\n21 = Ack of level transition\n22 = Ack of Text Message\n23 = Track Ahead Free Conf\n24 = Train Integrity\n25 = Continue Shunting on desk closure\n26 = Request geo position information\n27 = Request Change Level\n28 = Ack of LS\n29 = Ack for Roll Away Protection\n30 = Ack for Reverse Movement Protection\n31 = Ack for Standstill Supervision\n32 = Ack for Post Trip distance exceeded\n33 = Ack for Train Data change from source different from the driver\n34 = Toggle the the display of the tunnel stopping area\n35 = Zoom planning area\n36 = Toggle the display of planning area (used up to SRS 3.4.0)\n37 = display the train data" />
+        <variable name="status" type="boolean" description="requests (5 – 11, 25,27): true\nrequests (26): {true|false}\nack’s (12 – 22,28-33) : true\nconfirmations (23,24): {true|false}\n34: true display on, false: display off\n35: true: zoom in, false: zoom out\n36: true: display on, false: display off" />
+        <variable name="messageHandle" type="int" description="must be unique over all “active” messages, may be a\ncounter (see DMI.messageIndication); only valid for\ntext message ack(s)" />
+    </message>
+</adaptor>

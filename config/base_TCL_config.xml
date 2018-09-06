@@ -1,0 +1,3 @@
+<tcl>
+	<adaptor name="OBU" listenPort="8003" listenAddress="193.145.78.30"  remoteURL="http://193.145.78.191:8001" adaptorDefinitionFile="./config/adaptorDefinitions/Subset-111-2_IOP_FFFIS_OBU-v360_message-definitions_v1.xml" />
+</tcl>

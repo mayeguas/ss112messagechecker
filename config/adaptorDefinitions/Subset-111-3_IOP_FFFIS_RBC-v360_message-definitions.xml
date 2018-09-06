@@ -1,0 +1,134 @@
+﻿<adaptor type="RBC" version="v360" source="Subset-111-3_IOP_FFFIS_RBC-v360.pdf">
+    <message name="INIT.activate" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="activate" type="boolean" description="true = switch on\nfalse = switch off" />
+    </message>
+    <message name="INIT.status" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="activated" type="boolean" description="true = switched on\nfalse = switched off" />
+    </message>
+    <message name="CONFIG.requestData" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="tclConfigData" type="string" description="free text containing TCL configuration information" />
+        <variable name="timeStamp" type="string" description="“YYYY-MM-DD-HH:MM:SS.xxx”, xxx are the milliseconds”\nbased on GMT" />
+    </message>
+    <message name="CONFIG.Data" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="adaptorConfigData" type="string" description="free text containing the constituent configuration\nidentification (e.g. release note reference)" />
+        <variable name="companyId" type="int" description="identifier of the supplier of the Adaptor\nThe identity is defined by NID_XUSER, see\n0-255=ERA_ERTMS_040001 ASSIGNMENT OF\nVALUES TO ETCS VARIABLES\n1000-9999=user defined" />
+        <variable name="timeStamp" type="string" description="“YYYY-MM-DD-HH:MM:SS.xxx”, xxx are the\nmilliseconds\nbased on GMT" />
+        <variable name="systemVersion" type="int" description="RBC System version, M_VERSION SUBSET-026\n7.5.1.79" />
+    </message>
+    <message name="RBCADAPTOR.setLivePeriodicity" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="periodicity" type="int" description="milliseconds (default values = 200)" />
+    </message>
+    <message name="RBCADAPTOR.live" direction="toTCL" mandatoryLevel="mandatory" trigger="regular" >
+    </message>
+    <message name="RBCADAPTOR.statusReport" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="messageType" type="int" description="0 = information (general purpose message)\n1 = alarms\n2 = error" />
+        <variable name="message" type="string" description="full text or mnemonic" />
+    </message>
+    <message name="RBC.statusReport" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="rbcId" type="int" description="RBC ETCS Identity" />
+        <variable name="messageType" type="int" description="0 = information (general purpose message)\n1 = alarms\n2 = error" />
+        <variable name="message" type="string" description="full text or mnemonic" />
+    </message>
+    <message name="RBC.logActivate" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="rbcId" type="int" description="RBC ETCS Identity" />
+        <variable name="activate" type="boolean" description="true = activate logging\nfalse = deactivate logging" />
+        <variable name="logname" type="string" description="name of the logfile; max length: 25 characters\n(only numbers and letters allowed)" />
+    </message>
+    <message name="RBCADAPTOR.logActivate" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="activate" type="boolean" description="true = activate logging\nfalse = deactivate logging" />
+        <variable name="loggingType" type="boolean" description="true = on-line, false = off-line" />
+        <variable name="logname" type="string" description="name of the logfile; max length: 25 characters\n(only numbers and letters allowed)" />
+    </message>
+    <message name="LOGGING.request" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="transfer" type="boolean" description="true = activate transfer to TCL\nfalse = no transfer" />
+        <variable name="logname" type="string" description="name of the logfile" />
+        <variable name="delete" type="boolean" description="true = delete logfile\nfalse = no action" />
+    </message>
+    <message name="LOGGING.result" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="logname" type="string" description="name of the logfile" />
+        <variable name="data" type="base64" description="may contain the data of all attached RBCs\nThe content of this data file is not harmonized.\nThe analysis is a task of the RBC Adaptor\nsupplier." />
+        <variable name="sequenceNumber" type="int" description="sequence number starting with “1”\nThe complete logfile should be split into a\nsequence of “LOGGING.result” due to network\nresources" />
+        <variable name="complete" type="boolean" description="false = the sequence will be continued\ntrue = last message of the sequence" />
+    </message>
+    <message name="RBCADAPTOR.generalMessage" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="companyId" type="int" description="identifier of the supplier of the Adaptor\nThe identity is defined by NID_XUSER; see\n0-255=ERA_ERTMS_040001 ASSIGNMENT OF\nVALUES TO ETCS VARIABLES\n1000-9999=user defined" />
+        <variable name="freeMessageId" type="string" description="identifier of message for specific use to be defined\nby each company" />
+        <variable name="freeMessage" type="base64" description="the message itself.\nThe structure of this message is not harmonised." />
+    </message>
+    <message name="RBC.textMessage" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="rbcId" type="int" description="RBC ETCS Identity" />
+        <variable name="trainId" type="int" description="ETCS trainId." />
+        <variable name="textId" type="int" description="id of a predefined text or id of the text defined in\nthis message" />
+        <variable name="command" type="int" description="activate/de-activate\n-1 = ignore condition" />
+        <variable name="conditionCombination" type="int" description="0 = OR\n1 = AND\n-1 = ignore condition" />
+        <variable name="location" type="areaLocation" description="location to trigger text message; empty if not\napplicable." />
+        <variable name="direction" type="directionEnum" description="direction related to location where text is applicable\n-1 = ignore condition" />
+        <variable name="length" type="double" description="0 – 32565 m in 1m steps\n-1 = ignore condition" />
+        <variable name="modeStart" type="int" description="M_MODE; see SUBSET-026\n-1 = ignore condition" />
+        <variable name="modeEnd" type="int" description="same as “modeStart”" />
+        <variable name="levelStart" type="int" description="M_LEVEL; see SUBSET-026\n-1 = ignore condition" />
+        <variable name="levelEnd" type="int" description="see “levelStart”" />
+        <variable name="duration" type="int" description="seconds (1023 means unlimited)\n-1 = ignore condition" />
+        <variable name="confirm" type="boolean" description="true = driver has to confirm the message\nfalse = ignore condition or not to be confirmed" />
+        <variable name="text" type="string" description="limited to 255 characters\nempty text means that the textId is a predefined\ntext" />
+    </message>
+    <message name="RBC.setTsr" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="rbcId" type="int" description="RBC ETCS Identity" />
+        <variable name="tsrId" type="string" description="If the TSR ID is a predefined TSR then no\ndetailed information is needed" />
+        <variable name="activate" type="boolean" description="true = activate TSR\nfalse = deactivate TSR" />
+        <variable name="position" type="areaLocation" description="The “lineLocation”s shall be ordered in one\ndirection." />
+        <variable name="direction" type="int" description="1 = “up”: from “segmentId/startOffset” of the first\n“lineLocation” up to “segmentId/endOffset” of the\nlast “lineLocation” defined in “position”\n2 = “down”: reverse to 1\n-1 = Ignore condition." />
+        <variable name="length" type="int" description="0 – 32565 m in 1m steps\n-1 = Ignore condition" />
+        <variable name="speed" type="int" description="speed in [km/h]\n-1 = Ignore condition" />
+        <variable name="trainLengthDelay" type="boolean" description="train length delay (Yes\no)" />
+        <variable name="revocable" type="boolean" description="is the TSR revocable (Yes\no)" />
+        <variable name="textMessage" type="string" description="text message data (if applicable)" />
+        <variable name="tsrType" type="int" description="type of TSR\n-1 = n/a\n0 = TSR\n1 = SSP\n2 = Combination" />
+    </message>
+    <message name="RBC.inhibitTsr" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="rbcId" type="int" description="RBC ETCS Identity" />
+    </message>
+    <message name="RBCADAPTOR.setTrackOccupation" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="trackOccupationId" type="string" description="unique identifier of the occupation area" />
+        <variable name="trackOccupationStatus" type="int" description="1 = occupied\n2 = free\n3 = out of contro" />
+    </message>
+    <message name="TRAIN.operatorRequest" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="rbcId" type="int" description="RBC ETCS Identity" />
+        <variable name="trainId" type="int" description="ETCS trainId." />
+        <variable name="requestId" type="int" description="1 = Confirm Position (SUBSET-026-5 5.4.4 D33)\n2 = Accept train (SUBSET-026-5 5.4.4 D22)\n3 = Reject train (SUBSET-026-5 5.4.4 D22)\n4 = Delete Train (de-register train)\n5 = Permit Shunting Request (SUBSET-026-5 5.6.3\nS050)" />
+    </message>
+    <message name="TRAIN.manageTrain" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="rbcId" type="int" description="RBC ETCS Identity" />
+        <variable name="trainId" type="int" description="ETCS trainId." />
+        <variable name="handleTrain" type="int" description="1 = Confirm Position (SUBSET-026-5 5.4.4 D33)\n2 = Accept train (SUBSET-026-5 5.4.4 D22)\n3 = Reject train (SUBSET-026-5 5.4.4 D22)\n4 = Delete Train (de-register train)\n5 = Shunting Request Permitted (SUBSET-026-5 5.6.3\nS050)\n6 = Shunting Request Refused (SUBSET-026-5 5.6.3\nS050)" />
+    </message>
+    <message name="TRAIN.positionRequest" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="rbcId" type="int" description="RBC ETCS Identity" />
+        <variable name="trainId" type="int" description="ETCS trainId." />
+    </message>
+    <message name="TRAIN.positionIndication" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="rbcId" type="int" description="RBC ETCS Identity" />
+        <variable name="trainId" type="string" description="ETCS trainId." />
+        <variable name="position" type="location" description="The position must be the front of the train from\nposition report." />
+        <variable name="direction" type="int" description="1 = Unknown\n1 = UP\n2 = DOWN" />
+        <variable name="mode" type="int" description="-1 = Unknown\nM_MODE SUBSET-026 7.5.1.72" />
+        <variable name="level" type="int" description="-1 = Unknown\nM_LEVEL SUBSET-026 7.5.1.65" />
+        <variable name="speed" type="double" description=" -1 = Unknown km/h" />
+        <variable name="maLength" type="int" description="-1 = Unknown\nMovement Authority length. Length of MA in meter\nfrom LRBG." />
+        <variable name="ackedMaLength" type="int" description="1 = Unknown\nAcknowledged MA length. Length of acknowledged\nMA in meter from LRBG." />
+        <variable name="activeReactionType" type="int" description="reaction type:\n-1 = Unknown\n0 = No reaction\n1 = SMA, Shortening of MA, SUBSET-026 3.8.5.1.3\n2 = CSMA, Co-operative shortening of MA, SUBSET-\n026 3.8.6\n3 = CEM, Conditional Emergency stop, SUBSET-026\n3.10.2.2\n4 = UEM, Unconditional emergency stop, SUBSET-\n026 3.10.2.3" />
+        <variable name="activeReactionStatus" type="int" description="reaction status:\n-1 = Unknown\n0 = No Reaction\n1 = Sent,\n2 = Acknowledged,\n3 = Granted,\n4 = Rejected" />
+        <variable name="activeReactionDistance" type="int" description="1 = Unknown\nreaction distance in meter, from front end of train" />
+    </message>
+    <message name="RBCADAPTOR.setRoute" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="routeId" type="string" description="route identity\nThis unique information must be coherent with\nthe route table located in the TCL" />
+    </message>
+    <message name="RBCADAPTOR.cancelRoute" direction="toAdaptor" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="routeId" type="string" description="route identifier" />
+    </message>
+    <message name="RBC.routeStatus" direction="toTCL" mandatoryLevel="mandatory" trigger="singular" >
+        <variable name="routeId" type="string" description="route identity" />
+        <variable name="status" type="int" description="1 = locked\n2 = not locked" />
+        <variable name="trainId" type="int" description="ETCS trainId\n(0xFFFFFFFF if not allocated to a train)" />
+    </message>
+</adaptor>
